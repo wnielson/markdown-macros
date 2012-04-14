@@ -1,8 +1,4 @@
 import markdown
-import sys
-
-sys.path.append('../')
-
 import mdx_macros
 
 class SummationMacro(mdx_macros.BaseMacro):
