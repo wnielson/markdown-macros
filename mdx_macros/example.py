@@ -19,7 +19,7 @@ class SummationMacro(mdx_macros.BaseMacro):
         total = 0
         for arg in args:
             try:
-                total += eval(arg)
+                total += arg
             except:
                 pass
         

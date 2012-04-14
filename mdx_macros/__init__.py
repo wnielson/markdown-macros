@@ -1,3 +1,5 @@
+import ast
+import logging
 import markdown
 import re
 
@@ -30,9 +32,11 @@ def render_macro(name, arguments, inline, config):
                 for arg in arguments.split(','):
                     if '=' in arg:
                         k, v = arg.strip().split('=', 1)
-                        kwargs[k] = v
+                        
+                        # TODO: wrap this in try...except as it might fail
+                        kwargs[k] = ast.literal_eval(v)
                     else:
-                        args.append(arg.strip())
+                        args.append(ast.literal_eval(arg.strip()))
                 return macro.handler(*args, **kwargs)
 
 class MacroExtension(markdown.Extension):
@@ -66,7 +70,7 @@ class MacroPattern(markdown.inlinepatterns.Pattern):
         if rendered:
             return markdown.util.etree.fromstring(rendered)
         else:
-            logger.error("Invalid macro: %s" % macro_name)
+            logging.error("Invalid macro: %s" % macro_name)
             return m.group(0)
 
 class MacroBlockParser(markdown.blockprocessors.BlockProcessor):
@@ -95,7 +99,7 @@ class MacroBlockParser(markdown.blockprocessors.BlockProcessor):
                 # output wrapped in a <p> tag
                 elem = markdown.util.etree.SubElement(parent, 'p')
                 elem.text = block
-                logger.error("Invalid macro: %s" % macro_name)
+                logging.error("Invalid macro: %s" % macro_name)
         
 def makeExtension(config=[]):
     return MacroExtension(config)
