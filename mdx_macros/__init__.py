@@ -3,6 +3,8 @@ import logging
 import markdown
 import re
 
+__version__ = "0.1"
+
 MACRO_RE = r'\[\[(?P<macro>(?P<name>[A-Za-z0-9_^(]+)\((?P<args>.*)\))\]\]'
 
 class BaseMacro(object):
