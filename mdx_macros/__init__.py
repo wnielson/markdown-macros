@@ -3,7 +3,7 @@ import logging
 import markdown
 import re
 
-__version__ = "0.1"
+__version__ = "0.1.2"
 
 MACRO_RE = r'\[\[(?P<macro>(?P<name>[A-Za-z0-9_^(]+)\((?P<args>.*)\))\]\]'
 
@@ -15,8 +15,9 @@ class BaseMacro(object):
     name = 'Base macro'
     key  = 'Macro'
     
-    def __init__(self, inline):
+    def __init__(self, inline, config):
         self.inline = inline
+        self.config = config
     
     def handler(self, *args, **kwargs):
         pass
@@ -28,7 +29,7 @@ def render_macro(name, arguments, inline, config):
     """
     for MacroKlass in config.get('macros', []):
         if MacroKlass.key == name:
-            macro = MacroKlass(inline)
+            macro = MacroKlass(inline, config)
             if macro.handler:
                 args, kwargs = [], {}
                 for arg in arguments.split(','):
@@ -50,8 +51,7 @@ class MacroExtension(markdown.Extension):
         self.config = {'macros': []}
         
         for conf in config:
-            if conf[0] == "macros":
-                self.config['macros'].extend(conf[1])
+            self.config[conf[0]] = conf[1]
 
     def extendMarkdown(self, md, md_globals):
         macroPattern = MacroPattern(MACRO_RE, self.config)
