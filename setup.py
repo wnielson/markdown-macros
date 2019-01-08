@@ -11,7 +11,6 @@ setup(
     keywords="markdown macro macros",
     url="https://github.com/wnielson/markdown-macros",
     install_requires=[
-        "distribute",
         "Markdown>=2.1.1"
     ],
 )
